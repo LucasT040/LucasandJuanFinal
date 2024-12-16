@@ -77,6 +77,13 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     true
     )
 })
+function startGame () {
+    createPlayerOne()
+    createPlayerTwo()
+    createEnemies()
+    startLvl1()
+    createEnemies()
+}
 controller.down.onEvent(ControllerButtonEvent.Released, function () {
     animation.stopAnimation(animation.AnimationTypes.All, mySprite)
 })
@@ -158,20 +165,53 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
 })
 function level3 () {
     tiles.setCurrentTilemap(tilemap`level9`)
-    tiles.placeOnTile(mySprite, tiles.getTileLocation(20, 21))
-    tiles.placeOnTile(mySprite2, tiles.getTileLocation(20, 21))
+    tiles.placeOnTile(mySprite, tiles.getTileLocation(21, 25))
+    tiles.placeOnTile(mySprite2, tiles.getTileLocation(23, 25))
+    scene.cameraFollowSprite(mySprite)
+    Level_3 = true
 }
 sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Projectile, function (sprite, otherSprite) {
 	
 })
+function checkLevelEnemies () {
+    if (Level_1) {
+        for (let index = 0; index < randint(2, 4); index++) {
+            spawnEnemies = list[randint(0, 11)]
+            tiles.placeOnRandomTile(spawnEnemies, sprites.dungeon.floorDarkDiamond)
+            spawnEnemies.follow(mySprite, randint(10, 50))
+            spawnEnemies.setFlag(SpriteFlag.Invisible, false)
+        }
+    }
+    if (Level_2) {
+        for (let index = 0; index < randint(4, 6); index++) {
+            spawnEnemies = list[randint(0, 11)]
+            tiles.placeOnRandomTile(spawnEnemies, sprites.dungeon.collectibleInsignia)
+            spawnEnemies.follow(mySprite, randint(10, 50))
+            spawnEnemies.setFlag(SpriteFlag.Invisible, false)
+        }
+    }
+    if (Level_3) {
+        for (let index = 0; index < randint(6, 8); index++) {
+            spawnEnemies = list[randint(0, 11)]
+            tiles.placeOnRandomTile(spawnEnemies, sprites.dungeon.floorLightMoss)
+            spawnEnemies.follow(mySprite, randint(10, 50))
+            spawnEnemies.setFlag(SpriteFlag.Invisible, false)
+        }
+    }
+    if (Level_4) {
+        for (let index = 0; index < randint(15, 25); index++) {
+            spawnEnemies = list[randint(0, 11)]
+            tiles.placeOnRandomTile(spawnEnemies, sprites.dungeon.darkGroundCenter)
+            spawnEnemies.follow(mySprite, randint(10, 50))
+            spawnEnemies.setFlag(SpriteFlag.Invisible, false)
+        }
+    }
+}
 controller.right.onEvent(ControllerButtonEvent.Released, function () {
     animation.stopAnimation(animation.AnimationTypes.All, mySprite)
 })
 controller.left.onEvent(ControllerButtonEvent.Released, function () {
     animation.stopAnimation(animation.AnimationTypes.All, mySprite)
-})
-sprites.onOverlap(SpriteKind.Player, SpriteKind.portal, function (sprite, otherSprite) {
-    level2()
 })
 function createPlayerTwo () {
     mySprite2 = sprites.create(img`
@@ -214,16 +254,21 @@ function createPlayerTwo () {
         `, mySprite2, 50, 50)
 }
 function startLvl1 () {
+    game.splash("Welcome to Dungeon Masters: Co-Op")
+    game.splash("Blue Orbs are speed boosts")
+    game.splash("Red Orbs are HP orbs")
     tiles.setCurrentTilemap(tilemap`level5`)
-    tiles.placeOnTile(mySprite, tiles.getTileLocation(20, 20))
-    tiles.placeOnTile(mySprite2, tiles.getTileLocation(20, 21))
+    tiles.placeOnTile(mySprite, tiles.getTileLocation(7, 11))
+    tiles.placeOnTile(mySprite2, tiles.getTileLocation(8, 11))
     scene.cameraFollowSprite(mySprite)
     Level_1 = true
 }
 function level2 () {
     tiles.setCurrentTilemap(tilemap`level7`)
-    tiles.placeOnTile(mySprite, tiles.getTileLocation(20, 21))
-    tiles.placeOnTile(mySprite2, tiles.getTileLocation(20, 21))
+    tiles.placeOnTile(mySprite, tiles.getTileLocation(16, 18))
+    tiles.placeOnTile(mySprite2, tiles.getTileLocation(17, 18))
+    scene.cameraFollowSprite(mySprite)
+    Level_2 = true
 }
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
@@ -302,7 +347,6 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     )
 })
 function createEnemies () {
-    let list: Sprite[] = []
     for (let index = 0; index < 3; index++) {
         enemies1 = sprites.create(img`
             ........................
@@ -331,6 +375,7 @@ function createEnemies () {
             ........................
             `, SpriteKind.Enemy)
         list.push(enemies1)
+        enemies1.setFlag(SpriteFlag.Invisible, true)
     }
     for (let index = 0; index < 3; index++) {
         enemies2 = sprites.create(img`
@@ -352,6 +397,7 @@ function createEnemies () {
             . . . f f f f f f f . . . . . . 
             `, SpriteKind.Enemy)
         list.push(enemies2)
+        enemies2.setFlag(SpriteFlag.Invisible, true)
     }
     for (let index = 0; index < 3; index++) {
         enemies3 = sprites.create(img`
@@ -373,6 +419,7 @@ function createEnemies () {
             . . f d d d b . . f f b b b f . 
             `, SpriteKind.Enemy)
         list.push(enemies3)
+        enemies3.setFlag(SpriteFlag.Invisible, true)
     }
     for (let index = 0; index < 3; index++) {
         enemies4 = sprites.create(img`
@@ -394,14 +441,9 @@ function createEnemies () {
             . . f f c c c c c c c c . . . . 
             `, SpriteKind.Enemy)
         list.push(enemies4)
+        enemies4.setFlag(SpriteFlag.Invisible, true)
     }
-    if (Level_1) {
-        for (let index = 0; index < randint(2, 4); index++) {
-            spawnEnemies = list[randint(0, 11)]
-            tiles.placeOnRandomTile(spawnEnemies, sprites.dungeon.collectibleInsignia)
-            spawnEnemies.follow(mySprite, randint(10, 50))
-        }
-    }
+    checkLevelEnemies()
 }
 controller.up.onEvent(ControllerButtonEvent.Released, function () {
     animation.stopAnimation(animation.AnimationTypes.All, mySprite)
@@ -484,9 +526,10 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
 })
 function lvl4 () {
     tiles.setCurrentTilemap(tilemap`level11`)
-    tiles.placeOnTile(mySprite, tiles.getTileLocation(20, 20))
-    tiles.placeOnTile(mySprite2, tiles.getTileLocation(20, 21))
+    tiles.placeOnTile(mySprite, tiles.getTileLocation(29, 66))
+    tiles.placeOnTile(mySprite2, tiles.getTileLocation(30, 66))
     scene.cameraFollowSprite(mySprite)
+    Level_4 = true
 }
 function createPlayerOne () {
     mySprite = sprites.create(img`
@@ -528,20 +571,17 @@ function createPlayerOne () {
         . . . . . . . . . . . . . . . . 
         `, mySprite, 50, 50)
 }
-function TestLvL1 () {
-    createPlayerOne()
-    createPlayerTwo()
-    createEnemies()
-    startLvl1()
-    createEnemies()
-}
-let spawnEnemies: Sprite = null
 let enemies4: Sprite = null
 let enemies3: Sprite = null
 let enemies2: Sprite = null
 let enemies1: Sprite = null
-let Level_1 = false
 let projectile: Sprite = null
+let Level_4 = false
+let Level_2 = false
+let list: Sprite[] = []
+let spawnEnemies: Sprite = null
+let Level_1 = false
+let Level_3 = false
 let mySprite2: Sprite = null
 let mySprite: Sprite = null
-TestLvL1()
+startGame()
