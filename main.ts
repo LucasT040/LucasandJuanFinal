@@ -1,6 +1,31 @@
 namespace SpriteKind {
     export const portal = SpriteKind.create()
+    export const speedBoost = SpriteKind.create()
+    export const HP = SpriteKind.create()
 }
+mp.onButtonEvent(mp.MultiplayerButton.B, ControllerButtonEvent.Pressed, function (player2) {
+    projectile = sprites.createProjectileFromSprite(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . 3 3 . . . . . . . 
+        . . . . . . . 3 3 . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, mySprite2, 50, 50)
+    if (projectile.overlapsWith(spawnEnemies)) {
+        sprites.destroy(spawnEnemies)
+    }
+})
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
     mySprite,
@@ -76,6 +101,29 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     200,
     true
     )
+})
+mp.onButtonEvent(mp.MultiplayerButton.A, ControllerButtonEvent.Pressed, function (player2) {
+    projectile = sprites.createProjectileFromSprite(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . 3 3 . . . . . . . 
+        . . . . . . . 3 3 . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, mySprite, 50, 50)
+    if (projectile.overlapsWith(spawnEnemies)) {
+        sprites.destroy(spawnEnemies)
+    }
 })
 function startGame () {
     createPlayerOne()
@@ -205,6 +253,33 @@ function checkLevelEnemies () {
             spawnEnemies.follow(mySprite, randint(10, 50))
             spawnEnemies.setFlag(SpriteFlag.Invisible, false)
         }
+        finalBoss = sprites.create(img`
+            ........................
+            ............cc..........
+            ............ccc.........
+            ........ccc.ccccccc.....
+            ........ccccc555555cc...
+            ........ccb5555555555c..
+            .....ccc.b55555ff15555c.
+            .....cccb5555555ff55555c
+            ......cb555555555555d55c
+            ....c.b555555555bb55555c
+            ....ccb555ddd5555b13bbc.
+            ....ccd55ddddd555b3335c.
+            .....cdd5ddddddd55b335c.
+            ...c.bddddb555bbbd555c..
+            ...ccdddddbb55555bccc...
+            ...ccdddddddcc555bcc....
+            .ccccdddddddddcccbcccc..
+            .cdcdddddddd55dbbbc55c..
+            .cdddddddddd555dccc5c...
+            .cbddddbbbbdd5d555cc....
+            ..cbdddbbbbbdd5555......
+            ...cccbbbbbbd5555c......
+            .....cccccccc555c.......
+            .............ccc........
+            `, SpriteKind.Enemy)
+        tiles.placeOnRandomTile(finalBoss, sprites.dungeon.collectibleInsignia)
     }
 }
 controller.right.onEvent(ControllerButtonEvent.Released, function () {
@@ -269,7 +344,53 @@ function level2 () {
     tiles.placeOnTile(mySprite2, tiles.getTileLocation(17, 18))
     scene.cameraFollowSprite(mySprite)
     Level_2 = true
+    for (let index = 0; index < 3; index++) {
+        blueOrb = sprites.create(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . 6 6 6 6 . . . . . . 
+            . . . . 6 6 6 5 5 6 6 6 . . . . 
+            . . . 7 7 7 7 6 6 6 6 6 6 . . . 
+            . . 6 7 7 7 7 8 8 8 1 1 6 6 . . 
+            . . 7 7 7 7 7 8 8 8 1 1 5 6 . . 
+            . 6 7 7 7 7 8 8 8 8 8 5 5 6 6 . 
+            . 6 7 7 7 8 8 8 6 6 6 6 5 6 6 . 
+            . 6 6 7 7 8 8 6 6 6 6 6 6 6 6 . 
+            . 6 8 7 7 8 8 6 6 6 6 6 6 6 6 . 
+            . . 6 8 7 7 8 6 6 6 6 6 8 6 . . 
+            . . 6 8 8 7 8 8 6 6 6 8 6 6 . . 
+            . . . 6 8 8 8 8 8 8 8 8 6 . . . 
+            . . . . 6 6 8 8 8 8 6 6 . . . . 
+            . . . . . . 6 6 6 6 . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, SpriteKind.speedBoost)
+        tiles.placeOnRandomTile(blueOrb, sprites.dungeon.floorLight1)
+    }
+    for (let index = 0; index < 3; index++) {
+        redOrb = sprites.create(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . 4 4 4 4 . . . . . . 
+            . . . . 4 4 4 5 5 4 4 4 . . . . 
+            . . . 3 3 3 3 4 4 4 4 4 4 . . . 
+            . . 4 3 3 3 3 2 2 2 1 1 4 4 . . 
+            . . 3 3 3 3 3 2 2 2 1 1 5 4 . . 
+            . 4 3 3 3 3 2 2 2 2 2 5 5 4 4 . 
+            . 4 3 3 3 2 2 2 4 4 4 4 5 4 4 . 
+            . 4 4 3 3 2 2 4 4 4 4 4 4 4 4 . 
+            . 4 2 3 3 2 2 4 4 4 4 4 4 4 4 . 
+            . . 4 2 3 3 2 4 4 4 4 4 2 4 . . 
+            . . 4 2 2 3 2 2 4 4 4 2 4 4 . . 
+            . . . 4 2 2 2 2 2 2 2 2 4 . . . 
+            . . . . 4 4 2 2 2 2 4 4 . . . . 
+            . . . . . . 4 4 4 4 . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, SpriteKind.HP)
+        tiles.placeOnRandomTile(redOrb, sprites.dungeon.floorLight1)
+    }
 }
+scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.chestClosed, function (sprite, location) {
+    key = true
+    mySprite.sayText("i got the key ")
+})
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
     mySprite,
@@ -552,36 +673,53 @@ function createPlayerOne () {
         `, SpriteKind.Player)
     mp.setPlayerSprite(mp.playerSelector(mp.PlayerNumber.One), mySprite)
     mp.moveWithButtons(mp.playerSelector(mp.PlayerNumber.One))
-    projectile = sprites.createProjectileFromSprite(img`
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . 3 3 . . . . . . . 
-        . . . . . . . 3 3 . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        `, mySprite, 50, 50)
 }
+scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.collectibleInsignia, function (sprite, location) {
+    if (Level_1) {
+        if (key) {
+            game.splash("start level 2")
+            level2()
+        } else {
+            mySprite.sayText("i need they key ")
+        }
+    } else if (Level_2) {
+        if (key) {
+            game.splash("start level 3")
+            level3()
+        } else {
+            mySprite.sayText("i need they key ")
+        }
+    } else if (Level_3) {
+        if (key) {
+            game.splash("start level 4")
+            lvl4()
+        } else {
+            mySprite.sayText("i need they key ")
+        }
+    } else if (Level_4) {
+        if (key) {
+            game.splash("congrats")
+            game.gameOver(true)
+        } else {
+            mySprite.sayText("i need they key ")
+        }
+    }
+})
 let enemies4: Sprite = null
 let enemies3: Sprite = null
 let enemies2: Sprite = null
 let enemies1: Sprite = null
-let projectile: Sprite = null
+let key = false
+let redOrb: Sprite = null
+let blueOrb: Sprite = null
+let finalBoss: Sprite = null
 let Level_4 = false
 let Level_2 = false
 let list: Sprite[] = []
-let spawnEnemies: Sprite = null
 let Level_1 = false
 let Level_3 = false
-let mySprite2: Sprite = null
 let mySprite: Sprite = null
+let spawnEnemies: Sprite = null
+let mySprite2: Sprite = null
+let projectile: Sprite = null
 startGame()
