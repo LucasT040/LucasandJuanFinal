@@ -157,7 +157,7 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     )
 })
 function level3 () {
-    tiles.setCurrentTilemap(tilemap`level1`)
+    tiles.setCurrentTilemap(tilemap`level9`)
     tiles.placeOnTile(mySprite, tiles.getTileLocation(20, 21))
     tiles.placeOnTile(mySprite2, tiles.getTileLocation(20, 21))
 }
@@ -214,14 +214,14 @@ function createPlayerTwo () {
         `, mySprite2, 50, 50)
 }
 function startLvl1 () {
+    tiles.setCurrentTilemap(tilemap`level5`)
     tiles.placeOnTile(mySprite, tiles.getTileLocation(20, 20))
     tiles.placeOnTile(mySprite2, tiles.getTileLocation(20, 21))
     scene.cameraFollowSprite(mySprite)
     Level_1 = true
-    tiles.setCurrentTilemap(tilemap`level2`)
 }
 function level2 () {
-    tiles.setCurrentTilemap(tilemap`level3`)
+    tiles.setCurrentTilemap(tilemap`level7`)
     tiles.placeOnTile(mySprite, tiles.getTileLocation(20, 21))
     tiles.placeOnTile(mySprite2, tiles.getTileLocation(20, 21))
 }
@@ -482,6 +482,12 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     true
     )
 })
+function lvl4 () {
+    tiles.setCurrentTilemap(tilemap`level11`)
+    tiles.placeOnTile(mySprite, tiles.getTileLocation(20, 20))
+    tiles.placeOnTile(mySprite2, tiles.getTileLocation(20, 21))
+    scene.cameraFollowSprite(mySprite)
+}
 function createPlayerOne () {
     mySprite = sprites.create(img`
         . . . . . . . . . . . . . . . . 
