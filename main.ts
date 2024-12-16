@@ -128,7 +128,6 @@ mp.onButtonEvent(mp.MultiplayerButton.A, ControllerButtonEvent.Pressed, function
 function startGame () {
     createPlayerOne()
     createPlayerTwo()
-    createEnemies()
     startLvl1()
     createEnemies()
 }
@@ -217,9 +216,59 @@ function level3 () {
     tiles.placeOnTile(mySprite2, tiles.getTileLocation(23, 25))
     scene.cameraFollowSprite(mySprite)
     Level_3 = true
+    for (let index = 0; index < 6; index++) {
+        blueOrb = sprites.create(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . 6 6 6 6 . . . . . . 
+            . . . . 6 6 6 5 5 6 6 6 . . . . 
+            . . . 7 7 7 7 6 6 6 6 6 6 . . . 
+            . . 6 7 7 7 7 8 8 8 1 1 6 6 . . 
+            . . 7 7 7 7 7 8 8 8 1 1 5 6 . . 
+            . 6 7 7 7 7 8 8 8 8 8 5 5 6 6 . 
+            . 6 7 7 7 8 8 8 6 6 6 6 5 6 6 . 
+            . 6 6 7 7 8 8 6 6 6 6 6 6 6 6 . 
+            . 6 8 7 7 8 8 6 6 6 6 6 6 6 6 . 
+            . . 6 8 7 7 8 6 6 6 6 6 8 6 . . 
+            . . 6 8 8 7 8 8 6 6 6 8 6 6 . . 
+            . . . 6 8 8 8 8 8 8 8 8 6 . . . 
+            . . . . 6 6 8 8 8 8 6 6 . . . . 
+            . . . . . . 6 6 6 6 . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, SpriteKind.speedBoost)
+        tiles.placeOnRandomTile(blueOrb, sprites.dungeon.floorMixed)
+    }
+    for (let index = 0; index < 6; index++) {
+        redOrb = sprites.create(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . 4 4 4 4 . . . . . . 
+            . . . . 4 4 4 5 5 4 4 4 . . . . 
+            . . . 3 3 3 3 4 4 4 4 4 4 . . . 
+            . . 4 3 3 3 3 2 2 2 1 1 4 4 . . 
+            . . 3 3 3 3 3 2 2 2 1 1 5 4 . . 
+            . 4 3 3 3 3 2 2 2 2 2 5 5 4 4 . 
+            . 4 3 3 3 2 2 2 4 4 4 4 5 4 4 . 
+            . 4 4 3 3 2 2 4 4 4 4 4 4 4 4 . 
+            . 4 2 3 3 2 2 4 4 4 4 4 4 4 4 . 
+            . . 4 2 3 3 2 4 4 4 4 4 2 4 . . 
+            . . 4 2 2 3 2 2 4 4 4 2 4 4 . . 
+            . . . 4 2 2 2 2 2 2 2 2 4 . . . 
+            . . . . 4 4 2 2 2 2 4 4 . . . . 
+            . . . . . . 4 4 4 4 . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, SpriteKind.HP)
+        tiles.placeOnRandomTile(redOrb, sprites.dungeon.floorMixed)
+    }
 }
 sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Projectile, function (sprite, otherSprite) {
 	
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.speedBoost, function (sprite, otherSprite) {
+    sprites.destroy(blueOrb)
+    mp.moveWithButtons(mp.playerSelector(mp.PlayerNumber.One), 150, 150)
+    mp.moveWithButtons(mp.playerSelector(mp.PlayerNumber.Two), 150, 150)
+    pause(5000)
+    mp.moveWithButtons(mp.playerSelector(mp.PlayerNumber.One), 100, 100)
+    mp.moveWithButtons(mp.playerSelector(mp.PlayerNumber.Two), 100, 100)
 })
 function checkLevelEnemies () {
     if (Level_1) {
@@ -309,24 +358,7 @@ function createPlayerTwo () {
         `, SpriteKind.Player)
     mp.setPlayerSprite(mp.playerSelector(mp.PlayerNumber.Two), mySprite2)
     mp.moveWithButtons(mp.playerSelector(mp.PlayerNumber.Two))
-    projectile = sprites.createProjectileFromSprite(img`
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . 3 3 . . . . . . . 
-        . . . . . . . 3 3 . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        `, mySprite2, 50, 50)
+    mp.setPlayerState(mp.playerSelector(mp.PlayerNumber.Two), MultiplayerState.life, 5)
 }
 function startLvl1 () {
     game.splash("Welcome to Dungeon Masters: Co-Op")
@@ -337,6 +369,48 @@ function startLvl1 () {
     tiles.placeOnTile(mySprite2, tiles.getTileLocation(8, 11))
     scene.cameraFollowSprite(mySprite)
     Level_1 = true
+    for (let index = 0; index < 2; index++) {
+        blueOrb = sprites.create(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . 6 6 6 6 . . . . . . 
+            . . . . 6 6 6 5 5 6 6 6 . . . . 
+            . . . 7 7 7 7 6 6 6 6 6 6 . . . 
+            . . 6 7 7 7 7 8 8 8 1 1 6 6 . . 
+            . . 7 7 7 7 7 8 8 8 1 1 5 6 . . 
+            . 6 7 7 7 7 8 8 8 8 8 5 5 6 6 . 
+            . 6 7 7 7 8 8 8 6 6 6 6 5 6 6 . 
+            . 6 6 7 7 8 8 6 6 6 6 6 6 6 6 . 
+            . 6 8 7 7 8 8 6 6 6 6 6 6 6 6 . 
+            . . 6 8 7 7 8 6 6 6 6 6 8 6 . . 
+            . . 6 8 8 7 8 8 6 6 6 8 6 6 . . 
+            . . . 6 8 8 8 8 8 8 8 8 6 . . . 
+            . . . . 6 6 8 8 8 8 6 6 . . . . 
+            . . . . . . 6 6 6 6 . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, SpriteKind.speedBoost)
+        tiles.placeOnRandomTile(blueOrb, sprites.dungeon.floorMixed)
+    }
+    for (let index = 0; index < 1; index++) {
+        redOrb = sprites.create(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . 4 4 4 4 . . . . . . 
+            . . . . 4 4 4 5 5 4 4 4 . . . . 
+            . . . 3 3 3 3 4 4 4 4 4 4 . . . 
+            . . 4 3 3 3 3 2 2 2 1 1 4 4 . . 
+            . . 3 3 3 3 3 2 2 2 1 1 5 4 . . 
+            . 4 3 3 3 3 2 2 2 2 2 5 5 4 4 . 
+            . 4 3 3 3 2 2 2 4 4 4 4 5 4 4 . 
+            . 4 4 3 3 2 2 4 4 4 4 4 4 4 4 . 
+            . 4 2 3 3 2 2 4 4 4 4 4 4 4 4 . 
+            . . 4 2 3 3 2 4 4 4 4 4 2 4 . . 
+            . . 4 2 2 3 2 2 4 4 4 2 4 4 . . 
+            . . . 4 2 2 2 2 2 2 2 2 4 . . . 
+            . . . . 4 4 2 2 2 2 4 4 . . . . 
+            . . . . . . 4 4 4 4 . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, SpriteKind.HP)
+        tiles.placeOnRandomTile(redOrb, sprites.dungeon.floorMixed)
+    }
 }
 function level2 () {
     tiles.setCurrentTilemap(tilemap`level7`)
@@ -389,7 +463,7 @@ function level2 () {
 }
 scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.chestClosed, function (sprite, location) {
     key = true
-    mySprite.sayText("i got the key ")
+    mySprite.sayText("i got the key ", 500, false)
 })
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
@@ -569,6 +643,37 @@ function createEnemies () {
 controller.up.onEvent(ControllerButtonEvent.Released, function () {
     animation.stopAnimation(animation.AnimationTypes.All, mySprite)
 })
+function checkKey () {
+    if (Level_1) {
+        if (key) {
+            game.splash("start level 2")
+            level2()
+        } else {
+            mySprite.sayText("i need they key ")
+        }
+    } else if (Level_2) {
+        if (key) {
+            game.splash("start level 3")
+            level3()
+        } else {
+            mySprite.sayText("i need they key ")
+        }
+    } else if (Level_3) {
+        if (key) {
+            game.splash("start level 4")
+            lvl4()
+        } else {
+            mySprite.sayText("i need they key ")
+        }
+    } else if (Level_4) {
+        if (key) {
+            game.splash("congrats")
+            game.gameOver(true)
+        } else {
+            mySprite.sayText("i need they key ")
+        }
+    }
+}
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
     mySprite,
@@ -645,12 +750,59 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     true
     )
 })
+sprites.onOverlap(SpriteKind.Player, SpriteKind.HP, function (sprite, otherSprite) {
+    sprites.destroy(redOrb)
+    mp.changePlayerStateBy(mp.playerSelector(mp.PlayerNumber.One), MultiplayerState.life, 1)
+    mp.changePlayerStateBy(mp.playerSelector(mp.PlayerNumber.One), MultiplayerState.life, 1)
+})
 function lvl4 () {
     tiles.setCurrentTilemap(tilemap`level11`)
     tiles.placeOnTile(mySprite, tiles.getTileLocation(29, 66))
     tiles.placeOnTile(mySprite2, tiles.getTileLocation(30, 66))
     scene.cameraFollowSprite(mySprite)
     Level_4 = true
+    for (let index = 0; index < 25; index++) {
+        blueOrb = sprites.create(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . 6 6 6 6 . . . . . . 
+            . . . . 6 6 6 5 5 6 6 6 . . . . 
+            . . . 7 7 7 7 6 6 6 6 6 6 . . . 
+            . . 6 7 7 7 7 8 8 8 1 1 6 6 . . 
+            . . 7 7 7 7 7 8 8 8 1 1 5 6 . . 
+            . 6 7 7 7 7 8 8 8 8 8 5 5 6 6 . 
+            . 6 7 7 7 8 8 8 6 6 6 6 5 6 6 . 
+            . 6 6 7 7 8 8 6 6 6 6 6 6 6 6 . 
+            . 6 8 7 7 8 8 6 6 6 6 6 6 6 6 . 
+            . . 6 8 7 7 8 6 6 6 6 6 8 6 . . 
+            . . 6 8 8 7 8 8 6 6 6 8 6 6 . . 
+            . . . 6 8 8 8 8 8 8 8 8 6 . . . 
+            . . . . 6 6 8 8 8 8 6 6 . . . . 
+            . . . . . . 6 6 6 6 . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, SpriteKind.speedBoost)
+        tiles.placeOnRandomTile(blueOrb, sprites.dungeon.floorDark2)
+    }
+    for (let index = 0; index < 26; index++) {
+        redOrb = sprites.create(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . 4 4 4 4 . . . . . . 
+            . . . . 4 4 4 5 5 4 4 4 . . . . 
+            . . . 3 3 3 3 4 4 4 4 4 4 . . . 
+            . . 4 3 3 3 3 2 2 2 1 1 4 4 . . 
+            . . 3 3 3 3 3 2 2 2 1 1 5 4 . . 
+            . 4 3 3 3 3 2 2 2 2 2 5 5 4 4 . 
+            . 4 3 3 3 2 2 2 4 4 4 4 5 4 4 . 
+            . 4 4 3 3 2 2 4 4 4 4 4 4 4 4 . 
+            . 4 2 3 3 2 2 4 4 4 4 4 4 4 4 . 
+            . . 4 2 3 3 2 4 4 4 4 4 2 4 . . 
+            . . 4 2 2 3 2 2 4 4 4 2 4 4 . . 
+            . . . 4 2 2 2 2 2 2 2 2 4 . . . 
+            . . . . 4 4 2 2 2 2 4 4 . . . . 
+            . . . . . . 4 4 4 4 . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, SpriteKind.HP)
+        tiles.placeOnRandomTile(redOrb, sprites.dungeon.floorDark2)
+    }
 }
 function createPlayerOne () {
     mySprite = sprites.create(img`
@@ -673,53 +825,36 @@ function createPlayerOne () {
         `, SpriteKind.Player)
     mp.setPlayerSprite(mp.playerSelector(mp.PlayerNumber.One), mySprite)
     mp.moveWithButtons(mp.playerSelector(mp.PlayerNumber.One))
+    mp.setPlayerState(mp.playerSelector(mp.PlayerNumber.One), MultiplayerState.life, 5)
 }
 scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.collectibleInsignia, function (sprite, location) {
-    if (Level_1) {
-        if (key) {
-            game.splash("start level 2")
-            level2()
-        } else {
-            mySprite.sayText("i need they key ")
-        }
-    } else if (Level_2) {
-        if (key) {
-            game.splash("start level 3")
-            level3()
-        } else {
-            mySprite.sayText("i need they key ")
-        }
-    } else if (Level_3) {
-        if (key) {
-            game.splash("start level 4")
-            lvl4()
-        } else {
-            mySprite.sayText("i need they key ")
-        }
-    } else if (Level_4) {
-        if (key) {
-            game.splash("congrats")
-            game.gameOver(true)
-        } else {
-            mySprite.sayText("i need they key ")
-        }
-    }
+    checkKey()
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
+    mp.changePlayerStateBy(mp.playerSelector(mp.PlayerNumber.One), MultiplayerState.life, -1)
+    mp.changePlayerStateBy(mp.playerSelector(mp.PlayerNumber.Two), MultiplayerState.life, -1)
+    pause(2000)
 })
 let enemies4: Sprite = null
 let enemies3: Sprite = null
 let enemies2: Sprite = null
 let enemies1: Sprite = null
 let key = false
-let redOrb: Sprite = null
-let blueOrb: Sprite = null
 let finalBoss: Sprite = null
 let Level_4 = false
 let Level_2 = false
 let list: Sprite[] = []
 let Level_1 = false
+let redOrb: Sprite = null
+let blueOrb: Sprite = null
 let Level_3 = false
 let mySprite: Sprite = null
 let spawnEnemies: Sprite = null
 let mySprite2: Sprite = null
 let projectile: Sprite = null
 startGame()
+game.onUpdateInterval(100, function () {
+    if (info.life() <= 0) {
+        game.gameOver(false)
+    }
+})
